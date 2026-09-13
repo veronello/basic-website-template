@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#7a8463">
+    <meta name="description" content="A simple, reusable website template.">
+    <title>Section Home | My Site</title>
+    <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="header">
+      <nav class="primary" aria-label="Main navigation">
+        <a href="#/" data-section="home" aria-current="page">Section Home</a>
+        <a href="#/a/a1" data-section="a">Section A</a>
+        <a href="#/b" data-section="b">Section B</a>
+        <a href="#/c" data-section="c">Section C</a>
+        <a href="#/d" data-section="d">Section D</a>
+      </nav>
+    </header>
+    <div id="secondary-region" hidden>
+      <nav id="secondary" class="secondary" aria-label="Section navigation"></nav>
+    </div>
+    <main id="content" tabindex="-1">
+      <div class="page-heading">
+        <h1 id="page-title">Section Home</h1>
+        <p id="page-description" class="intro">Welcome to your site. Your introduction can be here: give visitors a short overview of what they can find and where they might like to begin.</p>
+      </div>
+      <div id="page-content"></div>
+    </main>
+    <footer class="footer">
+      <nav aria-label="Footer navigation">
+        <a href="#/privacy" data-section="privacy">Privacy Policy</a>
+        <a href="#/terms" data-section="terms">Terms of Use</a>
+        <a href="#/cookies" data-section="cookies">Cookie Policy</a>
+        <a href="#/contact" data-section="contact">Contact</a>
+      </nav>
+    </footer>
+    <noscript><p class="no-script">Please enable JavaScript to explore the other sections.</p></noscript>
+  </body>
+</html>
