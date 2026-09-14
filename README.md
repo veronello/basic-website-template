@@ -1,6 +1,6 @@
 # Basic Website Template
 
-A neutral website template with an olive green palette, pure black text, and a green heart favicon. Built with HTML, CSS, and JavaScript, with no dependencies or build step.
+A neutral website template with a fresh green and white palette, pure black text, and a four-square green favicon. Built with HTML, CSS, and JavaScript, with no dependencies or build step.
 
 ## Navigation
 
@@ -12,7 +12,7 @@ A neutral website template with an olive green palette, pure black text, and a g
 
 ## Customise
 
-Edit SITE_NAME and sections in app.js. Update matching menu labels in index.html. Change the colour and font tokens in styles.css. Replace favicon.svg and favicon.ico to change the tab icon. All page links use hash routes, so refreshing and browser Back/Forward work on static hosting.
+Edit SITE_NAME and sections in app.js. Update matching menu labels in index.html. Change the colour and font tokens in styles.css. Replace favicon.svg and favicon.ico and apple-touch-icon.png to change the tab and iPhone home-screen icons. All page links use hash routes, so refreshing and browser Back/Forward work on static hosting.
 
 ## GitHub Pages
 
