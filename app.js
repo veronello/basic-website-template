@@ -1,11 +1,16 @@
 /* Reuse this shell by changing SITE_NAME, sections, and the CSS color tokens.
    Add a children array to any section to give it a secondary menu. */
-const SITE_NAME = 'My Site';
+const SITE_NAME = 'Basic Website Template';
 const sections = {
   home: {
     title: 'Section Home',
     description: 'Welcome to your site. Your introduction can be here: give visitors a short overview of what they can find and where they might like to begin.',
     heading: 'About this site',
+    image: {
+      src: './image-placeholder.svg',
+      alt: 'Four rounded green squares arranged on a pale green background.',
+      caption: 'Add your image here. Use this caption to describe it or credit its creator.'
+    },
     paragraphs: [
       'Tell visitors what your site is about, who it is for, and why you created it. You can introduce yourself, describe your project, or share any background you would like people to know.',
       'Add your own description here. You might explain what each section contains, how the information is organised, or anything else that helps visitors find their way.'
@@ -17,7 +22,7 @@ const sections = {
     { id: 'a3', title: 'Subsection A 3', description: 'Your text for subsection A 3 can be here. Give visitors an overview of this topic and explain how it connects to the other information in section A.' },
     { id: 'a4', title: 'Subsection A 4', description: 'Your text for subsection A 4 can be here. Use this space to introduce a further topic or bring together related information within section A.' }
   ] },
-  b: { title: 'Section B', description: 'Your text for section B can be here. Describe what this section covers and introduce the information you would like to share with your visitors.' },
+  b: { title: 'Section B', description: 'Your text for section B can be here. Describe what this section covers and introduce the information you would like to share with your visitors.', showTextExamples: true },
   c: { title: 'Section C', description: 'Your text for section C can be here. Use this introduction to explain the purpose of the page and give readers some context for the details below.' },
   d: { title: 'Section D', description: 'Your text for section D can be here. Introduce the subject of this section and give visitors a short overview of what they will find on this page.' }
 };
@@ -36,19 +41,64 @@ function element(tag, className, text) {
   return node;
 }
 
+function renderTextExamples(copy) {
+  copy.append(element('h3', '', 'Your subheading can be here'));
+  copy.append(element('p', '', 'Use a subheading to introduce a smaller part of your topic. A short list can help readers find the key points:'));
+  const list = element('ul', 'example-list');
+  [
+    'Add your first point here.',
+    'Use the next item for another detail.',
+    'Keep each point as short or as detailed as you need.'
+  ].forEach(text => list.append(element('li', '', text)));
+  copy.append(list);
+  const quote = element('blockquote', 'example-quote');
+  quote.append(element('p', '', 'Your quotation can be here. Use this space for a passage you would like readers to notice.'));
+  copy.append(quote);
+  const paragraph = element('p', '');
+  const link = element('a', 'text-link', 'contact page');
+  link.href = '#/contact';
+  paragraph.append('You can also include a text link, such as a link to your ', link, '. Replace it with any page or resource that belongs in your content.');
+  copy.append(paragraph);
+}
+
+function renderNotFound({ focus = false } = {}) {
+  document.title = `Page not found | ${SITE_NAME}`;
+  document.getElementById('page-title').textContent = 'Page not found';
+  document.getElementById('page-description').textContent = 'This page may have moved, or the address may be incorrect.';
+  document.getElementById('secondary-region').hidden = true;
+  document.getElementById('secondary').replaceChildren();
+  document.querySelectorAll('[data-section]').forEach(link => link.removeAttribute('aria-current'));
+  const copy = element('section', 'page-copy');
+  const link = element('a', 'text-link', 'Return to Section Home');
+  link.href = '#/';
+  copy.append(link);
+  document.getElementById('page-content').replaceChildren(copy);
+  if (focus) focusContent();
+}
+
+function focusContent() {
+  document.getElementById('content').focus({ preventScroll: true });
+  window.scrollTo(0, 0);
+}
+
 function render({ focus = false } = {}) {
   const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
   const sectionId = parts[0] || 'home';
-  const section = sections[sectionId] || footerPages[sectionId];
+  const section = Object.hasOwn(sections, sectionId) ? sections[sectionId]
+    : Object.hasOwn(footerPages, sectionId) ? footerPages[sectionId] : null;
   if (!section || parts.length > 2 || (parts[1] && !section.children)) {
-    location.replace('#/');
+    renderNotFound({ focus });
     return;
   }
   let page = section;
   if (section.children) {
+    if (!parts[1]) {
+      location.replace(`#/${sectionId}/${section.children[0].id}`);
+      return;
+    }
     page = section.children.find(child => child.id === parts[1]);
     if (!page) {
-      location.replace(`#/${sectionId}/${section.children[0].id}`);
+      renderNotFound({ focus });
       return;
     }
   }
@@ -83,6 +133,19 @@ function render({ focus = false } = {}) {
       'Use another paragraph for supporting information, examples, or useful links. Replace these suggestions with your own text, and add or remove paragraphs to suit what you want to share.'
     ];
     paragraphs.forEach(text => copy.append(element('p', '', text)));
+    if (page.showTextExamples) renderTextExamples(copy);
+    if (page.image) {
+      const figure = element('figure', 'content-figure');
+      const image = element('img', '');
+      image.src = page.image.src;
+      image.alt = page.image.alt;
+      image.width = 1200;
+      image.height = 500;
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      figure.append(image, element('figcaption', '', page.image.caption));
+      copy.append(figure);
+    }
     content.append(copy);
   }
   if (page.cards) {
@@ -94,11 +157,18 @@ function render({ focus = false } = {}) {
     });
     content.append(cards);
   }
-  if (focus) {
-    document.getElementById('content').focus({ preventScroll: true });
-    window.scrollTo(0, 0);
-  }
+  if (focus) focusContent();
 }
 
+// Keep the skip link inside the current section instead of changing the route.
+document.querySelector('.skip-link').addEventListener('click', event => {
+  event.preventDefault();
+  const content = document.getElementById('content');
+  content.focus({ preventScroll: true });
+  content.scrollIntoView({ block: 'start' });
+});
+document.querySelectorAll('[data-year]').forEach(node => {
+  node.textContent = new Date().getFullYear();
+});
 window.addEventListener('hashchange', () => render({ focus: true }));
 render();
